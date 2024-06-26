@@ -127,7 +127,22 @@ class Controller {
   constructor(model, view) {
     this.model = model
     this.view = view
+
+    //display initial todos
+    this.onTodoListChanges(this.model.todos)
   }
+
+  onTodoListChanges = (todos) => {
+    this.view.displayTodos(todos)
+  }
+
+  handleAddTodo = (todo) => this.model.addTodo(todo)
+
+  handleDeleteTodo = (id) => this.model.deleteTodo(id)
+
+  handleEditTodo = (id, text) => this.model.editTodo(id, text)
+
+  handleToggleTodo = (id) => this.model.toggleTodo(id)
 }
 
 const app = new Controller(new Model(), new View())
