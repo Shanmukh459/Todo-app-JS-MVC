@@ -1,9 +1,10 @@
 class Model {
   constructor() {
-    this.todos = [
-      {id: 1, text: 'Run a marathon', complete: false},
-      {id: 2, text: 'Plant a garden', complete: false},
-    ]
+    // this.todos = [
+    //   {id: 1, text: 'Run a marathon', complete: false},
+    //   {id: 2, text: 'Plant a garden', complete: false},
+    // ]
+    this.todos = JSON.parse(localStorage.getItem('todos')) || []
   }
   addTodo(todoText) {
     const todo = {
@@ -12,27 +13,32 @@ class Model {
       complete: false
     }
     this.todos.push(todo)
-    this.onTodoListChanged(this.todos)
+    this._commit(this.todos)
   }
   editTodo(id, updatedText) {
     this.todos = this.todos.map(todo => 
       todo.id === id? {id: id, text: updatedText, complete: todo.complete} : todo
     )
-    this.onTodoListChanged(this.todos)
+    this._commit(this.todos)
   }
   deleteTodo(id) {
     this.todos = this.todos.filter(todo => todo.id !== id)
-    this.onTodoListChanged(this.todos)
+    this._commit(this.todos)
   }
   toggleTodo(id) {
     this.todos = this.todos.map(todo => 
       todo.id === id ? {id, text: todo.text, complete: !todo.complete} : todo
     )
-    this.onTodoListChanged(this.todos)
+    this._commit(this.todos)
   }
 
   bindOnTodoListChanged(callback) {
     this.onTodoListChanged = callback
+  }
+
+  _commit(todos) {
+    this.onTodoListChanged(todos)
+    localStorage.setItem('todos', JSON.stringify(todos))
   }
 }
 
