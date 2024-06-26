@@ -31,11 +31,11 @@ class Model {
 class View {
   constructor() {
     //root element
-    this.root = this.getElement("#root")
+    this.app = this.getElement("#root")
 
     //app title
-    this.heading = this.createElement("h1")
-    this.heading.textContent = "Todos"
+    this.title = this.createElement("h1")
+    this.title.textContent = "Todos"
 
     //the input form
     this.form = this.createElement("form")
@@ -67,6 +67,60 @@ class View {
     const element = document.querySelector(selector)
     return element
   }
+
+  get _todoText() {
+    return this.input.value
+  }
+
+  _resetInput() {
+    this.input.value = ''
+  }
+
+  displayTodos(todos) {
+    //Delete all the existing nodes
+    while(this.todoList.firstChild) {
+      this.todoList.removeChild(this.todoList.firstChild)
+    }
+
+    //show default message if no todos
+    if(todos.length === 0){
+      const p = this.createElement('p')
+      p.textContent = 'Nothing to do! Add a task?'
+      this.todoList.append(p)
+    }
+    else {
+      todos.forEach(todo => {
+        const li = this.createElement('li')
+        li.id = todo.id
+
+        //checkbox to toggle which indicates the completion of task
+        const checkbox = this.createElement('input')
+        checkbox.type = 'checkbox'
+        checkbox.checked = todo.complete 
+
+        //todo text which can be editable
+        const span = this.createElement('span')
+        span.contentEditable = true
+        span.classList.add('editable')
+        //adding a strike through to the text if the task is completed
+        if(todo.complete) {
+          const strike = this.createElement('s')
+          strike.textContent = todo.text
+          span.append(strike)
+        } else {
+          span.textContent = todo.text
+        }
+
+        //delete button for each todo
+        const deleteButton = this.createElement('button', 'delete')
+        deleteButton.textContent = 'Delete'
+        li.append(checkbox, span, deleteButton)
+
+        this.todoList.append(li)
+
+      })
+    }
+  }
 }
 
 class Controller {
@@ -77,3 +131,4 @@ class Controller {
 }
 
 const app = new Controller(new Model(), new View())
+// app.view.displayTodos(app.model.todos)
